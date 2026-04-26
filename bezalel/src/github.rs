@@ -119,7 +119,7 @@ impl GitHub {
 
             println!("Downloading {}...", name);
 
-            let response = self.client
+            let mut response = self.client
                 .get(download_url)
                 .bearer_auth(&self.token)
                 .header("User-Agent", "bezalel")
@@ -128,14 +128,13 @@ impl GitHub {
 
             println!("  download status: {}", response.status());
 
-            let bytes = response
-                .bytes()
+            let path = format!("{}/{}.zip", dest, name);
+            let mut file = std::fs::File::create(&path)
                 .map_err(|e| e.to_string())?;
 
-            println!("  downloaded {} bytes", bytes.len());
+            std::io::copy(&mut response, &mut file)
+                .map_err(|e| e.to_string())?;
 
-            let path = format!("{}/{}.zip", dest, name);
-            std::fs::write(&path, bytes).map_err(|e| e.to_string())?;
             println!("✓ saved to {}", path);
         }
 

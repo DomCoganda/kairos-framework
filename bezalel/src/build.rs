@@ -4,7 +4,9 @@ use std::thread;
 use std::time::Duration;
 
 pub fn run(app: &str, owner: &str, repo: &str) {
+    let app_id = format!("org.seraph.{}", capitalize(app));
     crate::workflow::generate(app, app);
+    crate::workflow::generate_flatpak_manifest(app, &app_id);
     let token = config::get_or_prompt_token();
     let gh = GitHub::new(token, owner.to_string(), repo.to_string());
     let workflow = "release.yml";
@@ -51,4 +53,12 @@ pub fn run(app: &str, owner: &str, repo: &str) {
     }
 
     println!("✓ All binaries saved to dist/");
+}
+
+fn capitalize(s: &str) -> String {
+    let mut c = s.chars();
+    match c.next() {
+        None => String::new(),
+        Some(f) => f.to_uppercase().collect::<String>() + c.as_str(),
+    }
 }
