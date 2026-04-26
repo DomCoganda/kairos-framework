@@ -2,6 +2,8 @@
 name = "bezalel"
 version = "0.1.0"
 edition = "2024"
+description = "Cross-platform build orchestrator for kairos-ui applications"
+license = "MIT"
 
 [dependencies]
 resvg = "0.44"
