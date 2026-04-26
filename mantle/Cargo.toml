@@ -1,0 +1,9 @@
+[package]
+name = "mantle"
+version = "0.0.1"
+edition = "2021"
+description = "A framework agnostic design token system. Define your visual identity once, apply it anywhere."
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+toml = "0.8"

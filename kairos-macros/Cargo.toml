@@ -1,0 +1,16 @@
+[package]
+name = "kairos-macros"
+version = "0.1.0"
+edition = "2024"
+description = "Procedural macros for Kairos — automatically generates component macros and builder patterns from struct definitions."
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = { version = "2", features = ["full"] }
+quote = "1"
+proc-macro2 = "1"
+heck = "0.5"
+resvg = "0.44"
+tiny-skia = "0.11"

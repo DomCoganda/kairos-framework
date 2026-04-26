@@ -1,0 +1,17 @@
+[package]
+name = "kairos"
+version = "0.1.0"
+edition = "2024"
+description = "A resumable, fine-grained reactive UI renderer written in Rust. Instantly reactive, surgically precise, memory safe by design."
+
+[features]
+build = ["dep:resvg", "dep:tiny-skia"]
+
+[dependencies]
+petra = { path = "../../Lib/petra" }
+mantle = { path = "../../Lib/mantle" }
+iced = { version = "0.13", features = ["svg", "image", "tokio", "canvas"] }
+iced_aw = { version = "0.11", default-features = false, features = ["wrap"] }
+kairos-macros = { path = "../kairos-macros" }
+resvg = { version = "0.44", optional = true }
+tiny-skia = { version = "0.11", optional = true }
