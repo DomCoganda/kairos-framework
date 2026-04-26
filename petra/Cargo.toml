@@ -1,6 +1,6 @@
 [package]
 license = "MIT"
-name = "petra"
+name = "kairos-petra"
 version = "0.0.1"
 edition = "2021"
 description = "A component primitive library for Rust. Clean, composable, easy to read and write."
