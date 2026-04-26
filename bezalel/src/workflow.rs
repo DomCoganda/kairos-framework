@@ -39,6 +39,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Vendor dependencies
+        run: |
+          cargo vendor vendor
+          mkdir -p .cargo
+          cat >> .cargo/config.toml << 'EOF'
+          [source.crates-io]
+          replace-with = "vendored-sources"
+          [source.vendored-sources]
+          directory = "vendor"
+          EOF
       - name: Install flatpak-builder
         run: |
           sudo apt-get update
@@ -110,9 +122,10 @@ pub fn generate_flatpak_manifest(app: &str, app_id: &str) {
           "name": "{app}",
           "buildsystem": "simple",
           "build-commands": [
-            "cargo build --release",
-            "install -Dm755 target/release/{app} /app/bin/{app}"
-          ],
+                "mkdir -p .cargo && printf '[source.crates-io]\\nreplace-with = \"vendored-sources\"\\n[source.vendored-sources]\\ndirectory = \"vendor\"\\n' > .cargo/config.toml",
+                "cargo build --release",
+                "install -Dm755 target/release/{app} /app/bin/{app}"
+            ],
           "sources": [
             {{
               "type": "dir",
