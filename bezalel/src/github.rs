@@ -103,8 +103,6 @@ impl GitHub {
             .json()
             .map_err(|e| e.to_string())?;
 
-        println!("  artifact response: {}", res);
-
         let artifacts = res["artifacts"]
             .as_array()
             .ok_or("No artifacts found")?;
@@ -126,16 +124,33 @@ impl GitHub {
                 .send()
                 .map_err(|e| e.to_string())?;
 
-            println!("  download status: {}", response.status());
-
-            let path = format!("{}/{}.zip", dest, name);
-            let mut file = std::fs::File::create(&path)
+            let zip_path = format!("{}/{}.zip", dest, name);
+            let mut file = std::fs::File::create(&zip_path)
                 .map_err(|e| e.to_string())?;
 
             std::io::copy(&mut response, &mut file)
                 .map_err(|e| e.to_string())?;
 
-            println!("✓ saved to {}", path);
+            let zip_file = std::fs::File::open(&zip_path)
+                .map_err(|e| e.to_string())?;
+            let mut archive = zip::ZipArchive::new(zip_file)
+                .map_err(|e| e.to_string())?;
+
+            let out_dir = format!("{}/{}", dest, name);
+            std::fs::create_dir_all(&out_dir).map_err(|e| e.to_string())?;
+
+            for i in 0..archive.len() {
+                let mut zip_entry = archive.by_index(i)
+                    .map_err(|e| e.to_string())?;
+                let out_path = format!("{}/{}", out_dir, zip_entry.name());
+                let mut out_file = std::fs::File::create(&out_path)
+                    .map_err(|e| e.to_string())?;
+                std::io::copy(&mut zip_entry, &mut out_file)
+                    .map_err(|e| e.to_string())?;
+            }
+
+            std::fs::remove_file(&zip_path).map_err(|e| e.to_string())?;
+            println!("✓ {} extracted to {}", name, out_dir);
         }
 
         Ok(())
