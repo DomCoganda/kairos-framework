@@ -10,8 +10,8 @@ pub fn generate(app: &str, binary_name: &str) {
         .expect("Could not create .github/workflows directory");
 
     let app_id = format!("org.seraph.{}{}",
-                         &binary_name[..1].to_uppercase(),
-                         &binary_name[1..]);
+                         &app[..1].to_uppercase(),
+                         &app[1..]);
 
     let contents = format!(r#"name: Release
 
@@ -61,12 +61,12 @@ jobs:
       - name: Build Flatpak
         run: flatpak-builder --user --install --force-clean build-dir {app_id}.json
       - name: Export Flatpak bundle
-        run: flatpak build-bundle ~/.local/share/flatpak/repo {app}-linux.flatpak {app_id}
+        run: flatpak build-bundle ~/.local/share/flatpak/repo {binary_name}-linux.flatpak {app_id}
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: {app}-linux
-          path: {app}-linux.flatpak
+          path: {binary_name}-linux.flatpak
 
   build-macos:
     runs-on: macos-latest
@@ -91,7 +91,7 @@ jobs:
     println!("✓ Generated .github/workflows/release.yml");
 }
 
-pub fn generate_flatpak_manifest(app: &str, app_id: &str) {
+pub fn generate_flatpak_manifest(app: &str, binary_name: &str, app_id: &str) {
     let manifest_path = format!("{}.json", app_id);
 
     if std::path::Path::new(&manifest_path).exists() {
@@ -104,7 +104,7 @@ pub fn generate_flatpak_manifest(app: &str, app_id: &str) {
       "runtime-version": "24.08",
       "sdk": "org.freedesktop.Sdk",
       "sdk-extensions": ["org.freedesktop.Sdk.Extension.rust-stable"],
-      "command": "{app}",
+      "command": "{binary_name}",
       "finish-args": [
         "--share=ipc",
         "--socket=wayland",
@@ -126,7 +126,7 @@ pub fn generate_flatpak_manifest(app: &str, app_id: &str) {
           "build-commands": [
             "mkdir -p .cargo && printf '[source.crates-io]\\nreplace-with = \"vendored-sources\"\\n[source.vendored-sources]\\ndirectory = \"vendor\"\\n' > .cargo/config.toml",
             "cargo build --release",
-            "install -Dm755 target/release/{app} /app/bin/{app}"
+            "install -Dm755 target/release/{binary_name} /app/bin/{binary_name}"
           ],
           "sources": [
             {{
@@ -136,7 +136,7 @@ pub fn generate_flatpak_manifest(app: &str, app_id: &str) {
           ]
         }}
       ]
-    }}"#, app = app, app_id = app_id);
+    }}"#, app = app, binary_name = binary_name, app_id = app_id);
 
     std::fs::write(&manifest_path, contents)
         .expect("Could not write Flatpak manifest");
