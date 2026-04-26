@@ -7,7 +7,7 @@ use petra::primitives::types::Orientation;
 use petra::Space;
 use super::style::{to_iced_length, to_iced_color};
 
-pub(crate) fn convert_spacer(s: Spacer, theme: &ThemeSet, palette: &Palette) -> iced::Element<'static, super::KairosEvent> {
+pub(crate) fn convert_spacer(s: Spacer, theme: &ThemeSet, _palette: &Palette) -> iced::Element<'static, super::KairosEvent> {
     let (width, height) = match s.orientation {
         Orientation::Vertical => (to_iced_length(Space::Shrink, &theme.sizes), to_iced_length(s.size, &theme.sizes)),
         Orientation::Horizontal => (to_iced_length(s.size, &theme.sizes), to_iced_length(Space::Shrink, &theme.sizes)),

@@ -21,7 +21,7 @@ pub(crate) fn convert_slider(s: Slider, palette: &Palette, _theme: &ThemeSet) ->
         KairosEvent::None
     })
         .step(s.step)
-        .style(move |_, status| iced::widget::slider::Style {
+        .style(move |_, _status| iced::widget::slider::Style {
             rail: iced::widget::slider::Rail {
                 backgrounds: (
                     iced::Background::Color(fill_color),

@@ -1,4 +1,5 @@
 [package]
+license = "MIT"
 name = "kairos"
 version = "0.1.0"
 edition = "2024"
@@ -15,3 +16,4 @@ iced_aw = { version = "0.11", default-features = false, features = ["wrap"] }
 kairos-macros = { path = "../kairos-macros" }
 resvg = { version = "0.44", optional = true }
 tiny-skia = { version = "0.11", optional = true }
+

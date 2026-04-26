@@ -8,7 +8,7 @@ use petra::primitives::types::Orientation;
 use crate::conversion::KairosEvent;
 use crate::conversion::style::resolve_color_source;
 
-pub fn convert_divider(d: Divider, p: &Palette, theme: &ThemeSet) -> iced::Element<'static, KairosEvent> {
+pub fn convert_divider(d: Divider, p: &Palette, _theme: &ThemeSet) -> iced::Element<'static, KairosEvent> {
     let color = resolve_color_source(&d.color, p);
 
     match d.style {

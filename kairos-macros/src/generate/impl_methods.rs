@@ -1,6 +1,6 @@
 use syn::Fields;
 
-pub fn build(field_names: &[String], field_types: &[String], fields: &Fields, macro_name: &str) -> String {
+pub fn build(field_names: &[String], field_types: &[String], fields: &Fields, _macro_name: &str) -> String {
 
     let nested_field_names: std::collections::HashSet<String> = fields.iter()
         .filter(|f| f.attrs.iter().any(|a| a.path().is_ident("nested")))

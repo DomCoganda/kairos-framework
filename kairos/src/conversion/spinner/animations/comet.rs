@@ -7,7 +7,7 @@ pub fn draw_comet(
     cx: f32, cy: f32,
     radius: f32,
     dot_size: f32,
-    phase: f32,
+    _phase: f32,
 ) {
     let dir = match program.direction {
         petra::Direction::Forward => 1.0_f32,
