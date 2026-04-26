@@ -1,6 +1,6 @@
 [package]
 license = "MIT"
-name = "mantle"
+name = "kairos-mantle"
 version = "0.0.1"
 edition = "2021"
 description = "A framework agnostic design token system. Define your visual identity once, apply it anywhere."
