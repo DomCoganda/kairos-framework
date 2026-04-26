@@ -1,6 +1,6 @@
 [package]
 license = "MIT"
-name = "kairos"
+name = "kairos-ui"
 version = "0.1.0"
 edition = "2024"
 description = "A resumable, fine-grained reactive UI renderer written in Rust. Instantly reactive, surgically precise, memory safe by design."
@@ -9,11 +9,11 @@ description = "A resumable, fine-grained reactive UI renderer written in Rust. I
 build = ["dep:resvg", "dep:tiny-skia"]
 
 [dependencies]
-petra = { path = "../../Lib/petra" }
-kairos-mantle = { path = "../../Lib/mantle" }
+petra = { package = "kairos-petra", version = "0.0.1", path = "../../Lib/petra" }
+mantle = { package = "kairos-mantle", version = "0.0.1", path = "../mantle" }
 iced = { version = "0.13", features = ["svg", "image", "tokio", "canvas"] }
 iced_aw = { version = "0.11", default-features = false, features = ["wrap"] }
-kairos-macros = { path = "../kairos-macros" }
+kairos-macros = { path = "../kairos-macros", version = "0.1.0" }
 resvg = { version = "0.44", optional = true }
 tiny-skia = { version = "0.11", optional = true }
 
