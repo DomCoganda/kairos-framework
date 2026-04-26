@@ -6,7 +6,7 @@ edition = "2021"
 description = "A component primitive library for Rust. Clean, composable, easy to read and write."
 
 [dependencies]
-kairos-mantle = { path = "../mantle" }
-kairos-macros = { path = "../kairos-macros" }
-nuntius = { path = "../nuntius" }
+kairos-mantle = { path = "../mantle", version = "0.0.1" }
+kairos-macros = { path = "../kairos-macros", version = "0.1.0" }
+nuntius = { path = "../nuntius", version = "0.0.1" }
 serde = { version = "1.0.228", features = ["derive"] }
