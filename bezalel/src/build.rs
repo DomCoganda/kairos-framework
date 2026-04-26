@@ -31,11 +31,17 @@ pub fn run(app: &str, owner: &str, repo: &str) {
     println!("Polling build status...");
     loop {
         match gh.poll_run(run_id) {
-            Ok(status) if status == "completed" => {
-                println!("✓ Build complete");
+            Ok((status, conclusion)) if status == "completed" => {
+                if conclusion == "success" {
+                    println!("✓ Build complete");
+                } else {
+                    eprintln!("✗ Build failed with conclusion: {}", conclusion);
+                    eprintln!("Check https://github.com/{}/{}/actions for details", owner, repo);
+                    return;
+                }
                 break;
             }
-            Ok(status) => {
+            Ok((status, _)) => {
                 println!("  status: {}...", status);
                 thread::sleep(Duration::from_secs(10));
             }

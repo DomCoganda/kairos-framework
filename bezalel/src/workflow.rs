@@ -56,8 +56,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y flatpak flatpak-builder
           flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
-          flatpak install --user -y flathub org.freedesktop.Platform//23.08 org.freedesktop.Sdk//23.08
-          flatpak install --user -y flathub org.freedesktop.Sdk.Extension.rust-stable//23.08
+          flatpak install --user -y flathub org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08
+          flatpak install --user -y flathub org.freedesktop.Sdk.Extension.rust-stable//24.08
       - name: Build Flatpak
         run: flatpak-builder --user --install --force-clean build-dir {app_id}.json
       - name: Export Flatpak bundle
@@ -90,6 +90,7 @@ jobs:
 
     println!("✓ Generated .github/workflows/release.yml");
 }
+
 pub fn generate_flatpak_manifest(app: &str, app_id: &str) {
     let manifest_path = format!("{}.json", app_id);
 
@@ -100,7 +101,7 @@ pub fn generate_flatpak_manifest(app: &str, app_id: &str) {
     let contents = format!(r#"{{
       "app-id": "{app_id}",
       "runtime": "org.freedesktop.Platform",
-      "runtime-version": "23.08",
+      "runtime-version": "24.08",
       "sdk": "org.freedesktop.Sdk",
       "sdk-extensions": ["org.freedesktop.Sdk.Extension.rust-stable"],
       "command": "{app}",
@@ -114,7 +115,8 @@ pub fn generate_flatpak_manifest(app: &str, app_id: &str) {
       "build-options": {{
         "append-path": "/usr/lib/sdk/rust-stable/bin",
         "env": {{
-          "CARGO_HOME": "/run/build/{app}/cargo"
+          "CARGO_HOME": "/run/build/{app}/cargo",
+          "RUSTUP_TOOLCHAIN": "stable"
         }}
       }},
       "modules": [
@@ -122,10 +124,10 @@ pub fn generate_flatpak_manifest(app: &str, app_id: &str) {
           "name": "{app}",
           "buildsystem": "simple",
           "build-commands": [
-                "mkdir -p .cargo && printf '[source.crates-io]\\nreplace-with = \"vendored-sources\"\\n[source.vendored-sources]\\ndirectory = \"vendor\"\\n' > .cargo/config.toml",
-                "cargo build --release",
-                "install -Dm755 target/release/{app} /app/bin/{app}"
-            ],
+            "mkdir -p .cargo && printf '[source.crates-io]\\nreplace-with = \"vendored-sources\"\\n[source.vendored-sources]\\ndirectory = \"vendor\"\\n' > .cargo/config.toml",
+            "cargo build --release",
+            "install -Dm755 target/release/{app} /app/bin/{app}"
+          ],
           "sources": [
             {{
               "type": "dir",

@@ -65,7 +65,7 @@ impl GitHub {
             .ok_or("Could not get run ID".to_string())
     }
 
-    pub fn poll_run(&self, run_id: u64) -> Result<String, String> {
+    pub fn poll_run(&self, run_id: u64) -> Result<(String, String), String> {
         let url = format!(
             "https://api.github.com/repos/{}/{}/actions/runs/{}",
             self.owner, self.repo, run_id
@@ -81,10 +81,17 @@ impl GitHub {
             .json()
             .map_err(|e| e.to_string())?;
 
-        res["status"]
+        let status = res["status"]
             .as_str()
-            .map(|s| s.to_string())
-            .ok_or("Could not get run status".to_string())
+            .unwrap_or("unknown")
+            .to_string();
+
+        let conclusion = res["conclusion"]
+            .as_str()
+            .unwrap_or("unknown")
+            .to_string();
+
+        Ok((status, conclusion))
     }
 
     pub fn download_artifacts(&self, run_id: u64, dest: &str) -> Result<(), String> {
@@ -135,6 +142,12 @@ impl GitHub {
                 .map_err(|e| e.to_string())?;
             let mut archive = zip::ZipArchive::new(zip_file)
                 .map_err(|e| e.to_string())?;
+
+            println!("  zip contains {} files", archive.len());
+            for i in 0..archive.len() {
+                let entry = archive.by_index(i).map_err(|e| e.to_string())?;
+                println!("  - {}", entry.name());
+            }
 
             let out_dir = format!("{}/{}", dest, name);
             std::fs::create_dir_all(&out_dir).map_err(|e| e.to_string())?;
